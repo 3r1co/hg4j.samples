@@ -1,15 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+    <context-param>
+        <param-name>hg4j.web.repo.location</param-name>
+        <param-value>/home/artem/hg/cpython</param-value>
+    </context-param>
     <servlet>
         <servlet-name>HgLogServlet</servlet-name>
         <servlet-class>org.tmatesoft.hg.web.LogServlet</servlet-class>
-        <init-param>
-            <param-name>hg4j.web.repo.location</param-name>
-            <param-value>/home/artem/hg/cpython</param-value>
-        </init-param>
+    </servlet>
+    <servlet>
+        <servlet-name>HgCatServlet</servlet-name>
+        <servlet-class>org.tmatesoft.hg.web.CatServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>HgManifestServlet</servlet-name>
+        <servlet-class>org.tmatesoft.hg.web.ManifestServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>HgLogServlet</servlet-name>
         <url-pattern>/log</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>HgCatServlet</servlet-name>
+        <url-pattern>/checkout/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>HgManifestServlet</servlet-name>
+        <url-pattern>/ls</url-pattern>
     </servlet-mapping>
 </web-app>

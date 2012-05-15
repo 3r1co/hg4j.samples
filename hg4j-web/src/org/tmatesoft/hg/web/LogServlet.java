@@ -16,22 +16,21 @@
  */
 package org.tmatesoft.hg.web;
 
-import java.io.File;
+import static org.tmatesoft.hg.web.ParamExtractor.REVISION_PARAM;
+import static org.tmatesoft.hg.web.ParamExtractor.REV_INDEX_PARAM;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.ListIterator;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.tmatesoft.hg.core.HgChangeset;
 import org.tmatesoft.hg.core.HgException;
 import org.tmatesoft.hg.core.HgLogCommand;
-import org.tmatesoft.hg.core.HgRepoFacade;
-import org.tmatesoft.hg.core.HgRepositoryNotFoundException;
 import org.tmatesoft.hg.repo.HgRepository;
 
 /**
@@ -39,25 +38,9 @@ import org.tmatesoft.hg.repo.HgRepository;
  * @author Artem Tikhomirov
  * @author TMate Software Ltd.
  */
-public class LogServlet extends HttpServlet {
-
-	private static final long serialVersionUID = -8501301579001467784L;
-	private HgRepoFacade hgRepo;
-
-	@Override
-	public void init() throws ServletException {
-		super.init();
-		String repoLoc = getInitParameter("hg4j.web.repo.location");
-		if (repoLoc == null) {
-			throw new ServletException("Repository location not confugured");
-		}
-		hgRepo = new HgRepoFacade();
-		try {
-			hgRepo.initFrom(new File(repoLoc));
-		} catch (HgRepositoryNotFoundException ex) {
-			throw new ServletException(ex);
-		}
-	}
+public class LogServlet extends RepoServlet {
+	private static final long serialVersionUID = 7983667593405508682L;
+	private final String manifestLink = "ls";
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -82,9 +65,9 @@ public class LogServlet extends HttpServlet {
 				pw.print("<tr>");
 				HgChangeset cs = it.previous();
 				pw.print("<td>");
-				pw.print(cs.getRevisionIndex());
+				pw.printf("<a href=\"%s?%s=%d\">%3$d</a>", manifestLink, REV_INDEX_PARAM, cs.getRevisionIndex());
 				pw.print(" : ");
-				pw.print(cs.getNodeid());
+				pw.printf("<a href=\"%s?%s=%s\">%s</a>", manifestLink, REVISION_PARAM, cs.getNodeid(), cs.getNodeid().shortNotation());
 				pw.print("<td>");
 				pw.print(cs.getComment());
 				pw.print("<td>");
